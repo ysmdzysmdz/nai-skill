@@ -97,7 +97,7 @@ artist:inushima, artist:re:shimashima, year 2025, year 2026
 **书写规则**
 
 - **两个 year 一般一起写**:`year 2025, year 2026` 连着写,能压住"近期画风",也更符合用户习惯.
-- **允许混合多个艺术家**:`artist:xxx, artist:yyy`,风格会互相融合.一般 2–3 个封顶,再堆会糊,除非经过权重微调(例如0.6::artist:xxx::).
+- **允许混合多个艺术家**:`artist:xxx, artist:yyy`,风格会互相融合.可通过权重微调(例如0.6::artist:xxx::).
 - **顺序固定**:先列全部 `artist:`,再跟 `year 2025, year 2026`.不要 year 夹在 artist 中间.
 - 没有 year 的极简写法仍可用:`artist:unfairr`.
 - **加 year 不一定比不加更美**,**艺术家26年与25年画风差异巨大时,单独写year 2026说不定效果更好**,这些属于要实测比较的选项,不能默认加成"更好".
