@@ -58,6 +58,23 @@
 ## raiden_shogun
 # 菈乌玛 [熟女]
 ## lauma_(genshin_impact)
+# 若娜瓦 [熟女]
+## ronova_(genshin impact)
+
+# 花火 [少女]
+## sparkle_(honkai:_star_rail)
+# 阮梅 [熟女]
+## ruan_mei_(honkai:_star_rail)
+# 停云 [熟女]
+## tingyun_(honkai:_star_rail)
+
+# 千夏 [小只马]
+## sunna_(zenless_zone_zero)
+# 蕾米埃尔·丹 [熟女]
+## remielle_dan
+## remielle_dan_(seashade_pas_seul)
+# 维琳娜·艾尔吉德 [熟女]
+## velina_airgid
 
 # 帽子米塔 [少女]
 ## cappie_(miside)
@@ -66,7 +83,7 @@
 ## beatrice_(re:zero)
 # 爱蜜莉雅 [少女]
 ## emilia_(re:zero)
-### 第四季服装 [兜帽 紫色紧身连体衣 白色靴子] todo
+### 第四季服装 [兜帽 紫色紧身连体衣 白色靴子]
 # 普莉希拉·跋利耶尔 [熟女]
 ## priscilla_barielle
 
@@ -88,5 +105,21 @@
 # 玛吉亚贝瑟 [少女]
 ## magia_baiser
 
+# 阿尼斯 [熟女]
+## anis_(sparkling_summer)_(nikke)
+## anis_(star)_(startlight)_(nikke)
 # 娜由塔 [熟女]
 ## nayuta_(wu_wei)_(nikke)
+
+# 格温 [少女]
+## gwen_(league)
+# 阿狸 [少女]
+## ahri_(league)
+# 琴女 [少女]
+## sona_(league)
+# 萨勒芬妮 [少女]
+## seraphine_(league)
+# 阿萝拉 [少女]
+## aurora_(league)
+# 拉克丝 [少女]
+## lux_(league)
