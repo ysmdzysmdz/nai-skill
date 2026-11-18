@@ -83,7 +83,7 @@
 ## beatrice_(re:zero)
 # 爱蜜莉雅 [少女]
 ## emilia_(re:zero)
-### 第四季服装 [兜帽 紫色紧身连体衣 白色靴子]
+### 第四季服装 [兜帽 紫色紧身连体衣 白色靴子] todo
 # 普莉希拉·跋利耶尔 [熟女]
 ## priscilla_barielle
 
@@ -100,16 +100,29 @@
 ## illustrious_(maiden_lily's_radiance)_(azur_lane)
 ## illustrious_(wandering_glow_of_midnight)_(azur_lane) todo
 
+# 调月莉音
+## rio_(blue_archive)
+
 # 尼禄爱丽丝 [小只马]
 ## nero_alice
 # 玛吉亚贝瑟 [少女]
 ## magia_baiser
-
+# 贝洛塔 [小只马]
+## belorta_(pumpkin_witch)_(nikke)
+# 爱丽丝 [少女]
+## alice_(nikke)
+## alice_(wonderland_bunny)_(nikke)
+# 希芙蒂 [少女]
+## mekami_shifty_(nikke)
+# 玛律恰那 [熟女]
+## marciana_(marine_study)_(nikke)
 # 阿尼斯 [熟女]
 ## anis_(sparkling_summer)_(nikke)
 ## anis_(star)_(startlight)_(nikke)
 # 娜由塔 [熟女]
 ## nayuta_(wu_wei)_(nikke)
+# 灰姑娘 [熟女]
+## cinderella_(crystal_wave)_(nikke)
 
 # 格温 [少女]
 ## gwen_(league)
