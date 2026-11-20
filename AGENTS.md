@@ -108,7 +108,7 @@ artist:inushima, artist:re:shimashima, year 2025, year 2026
 
 可选回答方向供用户挑:
 
-- 指定艺术家:`artist:NAME`,或混合多位 `artist:xxx, artist:yyy`(2–3 个封顶)
+- 指定艺术家:`artist:NAME`,或混合多位 `artist:xxx, artist:yyy`
 - 艺术家 + 年份:`artist:xxx, year 2025, year 2026`(两个 year 一起写)
 - 画风描述:如 `traditional chinese painting aesthetic, watercolor ink accents`
 - 留空(纯模型默认审美)
