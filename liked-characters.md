@@ -1,4 +1,4 @@
-该文件是用户喜欢的动漫角色表(本体或者皮肤),#后面是中文名和特征标签,##后面是精确的danbooru英文名,### 后面是没有官方命名的皮肤和特征标签
+该文件是用户喜欢的动漫角色表(本体或者皮肤),#后面是中文名和特征标签,##后面是精确的danbooru英文名,###后面是没有官方命名的皮肤和特征标签
 
 # 阿比盖尔 [小只马]
 ## abigail_williams_(fate)
@@ -14,7 +14,7 @@
 # 葛饰北斋 [少女]
 ## katsushika_hokusai_(second_ascension)_(fate)
 ## katsushika_hokusai_(swimsuit_saber)_(fate) [和服泳装]
-## katsushika_hokusai_(painting_summer)_(fate) [日式花卉泳装]
+## katsushika_hokusai_(painting_summer)_(fate) [花卉泳装]
 # 伊什塔尔 [少女 远坂凛]
 ## ishtar_(fate)
 # 热情迷唇 [少女]
@@ -149,7 +149,7 @@
 ## marciana_(marine_study)_(nikke)
 # 阿尼斯 [熟女]
 ## anis_(sparkling_summer)_(nikke)
-## anis_(star)_(startlight)_(nikke) [半透黑丝紧身连体衣] anis_(star)_(starlight)_(nikke) 
+## anis_(star)_(startlight)_(nikke) [半透黑丝紧身连体衣]
 # 娜由塔 [熟女]
 ## nayuta_(wu_wei)_(nikke)
 # 灰姑娘 [熟女]
