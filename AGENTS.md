@@ -183,7 +183,7 @@ from_above, cowboy_shot, centered, dynamic_angle
 共通:
 
 - 程序会按 `ucPreset` 自动带内置负面词,**不要重复写**.
-- 常见排除方向:防服饰错 `modern_clothes`;防镜头相反 `from_below`;防解剖崩坏 `bad_hands`.
+- 常见排除方向:防服饰错 `modern_clothes`;防镜头相反 `from_below`;防解剖崩坏 `bad_hands`;防水印`watermark`;防文字`text`.
 - 用户习惯把需要排除的具体元素写成正面负权重(`-2::xxx::`),medium 下这是唯一手段.
 - 不要加能显著改变画面风格的词,例如`photo`,`3d`,`realistic`等等,除非用户明确要求
 
@@ -212,7 +212,7 @@ from_above, cowboy_shot, centered, dynamic_angle
 - [ ] 多角色(≥2 人)时已读 [`multi-character.md`](multi-character.md),人数标签在 base、角色 prompt 不带数字
 - [ ] 已询问 stylePrompt 风格
 - [ ] 若用艺术家:`artist:` 在前,`year 2025, year 2026` 在后,两个 year 一起写
-- [ ] 若混合艺术家:2–3 个封顶,格式 `artist:xxx, artist:yyy`
+- [ ] 若混合艺术家:格式 `artist:xxx, artist:yyy`
 - [ ] 用户已确认提示词
 - [ ] steps / sampler / ucPreset / cfgRescale 与 §1.2 一致(medium 下为 14 / k_euler_ancestral / 0 / 0)
 - [ ] 尺寸符合 §1.1(或用户明示)
