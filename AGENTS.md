@@ -75,6 +75,8 @@
 
 **一张图出现 2 个及以上角色时,必须先读** [`multi-character.md`](multi-character.md).
 
+**多角色提示词组装时,依然要按照 组间换行,组内逗号 的规则**
+
 三条最容易错的,先记住:
 
 1. **人数标签(`2girls` 等)写在 base prompt,角色 prompt 里只写 `girl` / `boy` / `other`,不带数字.**
@@ -198,7 +200,7 @@ from_above, cowboy_shot, centered, dynamic_angle
 
 ## 4. 负面提示词:按模型分叉
 
-- **medium(默认)**:自定义 `negativePrompt` **不发送**,要排除元素只能写进**正面的负权重**,如 `-2::foot_out_of_frame::,-2::wet_skin::`. 原理见 [`model-medium.md`](model-medium.md).
+- **medium(默认)**:自定义 `negativePrompt` **不发送**,要排除元素只能写进**正面的负权重**,原理见 [`model-medium.md`](model-medium.md).
 - **full**:`negativePrompt` **正常发送**,只写增量,不重复内置负面. 见 [`model-full.md`](model-full.md) §2.
 - **多角色**:角色级负面同样受此限制,medium 下不发送,见 [`multi-character.md`](multi-character.md) §4.
 

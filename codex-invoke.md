@@ -5,7 +5,7 @@
 > **一句话原则：素材库的活全部归 codex，我只发一句话、只收一个成品提示词。**
 > codex 干活所需的知识在 [`pose-clothes-hair-reference.md`](pose-clothes-hair-reference.md)——那是它的手册，不是我的。
 
-**当前通道：`codex app-server --stdio`（经 `codex-as.js`），单任务 36.8s。** 2026-11-22 起取代 `codex exec`，理由见 §0.2。
+当前通过 `codex-as.js` 调用 `codex app-server`，使用默认的 stdio 传输。
 
 ---
 
@@ -13,38 +13,22 @@
 
 ### 0.1 一条命令
 
+新电脑先确认 `node --version` 和 `codex --version` 都能运行。需要安装 CLI 时，可用 `npm install -g @openai/codex`，再按 `codex` 的提示登录。
+
 ```powershell
-# 项目根执行；包装入口（推荐）：跑完自动补索引
+# 在项目根验证 CLI、登录与 JSON 输出
+.\runs\bin\run-codex.ps1 -Label smoke -Sandbox read-only -NoIndex -Prompt '只回复 {"ok":true}，不调用工具。'
+
+# 先创建 runs\req\poseA.txt，再执行任务并补索引
 .\runs\bin\run-codex.ps1 -Label poseA -PromptFile .\runs\req\poseA.txt
 
 # 直连底层（不补索引时才用）
-node .\runs\bin\codex-as.js --cwd "C:\Users\76383\dsh-event\nai-skill" --label poseA --task .\runs\req\poseA.txt
+node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label poseA --task .\runs\req\poseA.txt
 ```
 
 产物直落 `runs\`，提示词放 `runs\req\`，索引 `runs\runs.jsonl`，见 §7。
 
-**素材库根目录（写进提示词用绝对路径，别猜）：**
-
-```
-C:\Users\76383\codex-event\ai-pose-gallery-zh     ← data\ 与 img\ 都在这下面
-```
-
-### 0.2 为什么不用 `codex exec`
-
-同机、同任务、同参数实测：
-
-| 通道 | 墙钟 | 拆解 |
-|---|---|---|
-| `codex exec` 极简请求（只回 `{"ok":true}`） | 17.6s | 纯包装层基线 |
-| `codex exec` 完整单任务 | 70.0s | 17.6s 包装 + 52.4s 真实工作 |
-| **`codex app-server --stdio` 同一任务** | **36.8s** | 0.21s 握手 + 36.6s 真实工作 |
-| 桌面端（常驻热进程） | 29.0s | 无包装层 |
-
-`exec` 是 TUI 的脚本化版本，每次把整场会话渲染一遍、结束再重放一遍。**换通道省 33.2 秒（−47%）**，握手只占 0.21s，其余全是包装层。
-
-代价：`app-server` 每跑一次仍是新进程（省不了模型推理），且 `codex app-server proxy` 连 daemon 的路走不通（§8.2）。
-
-### 0.3 什么任务交给 codex
+### 0.2 什么任务交给 codex
 
 | 需求 | 归谁 |
 |---|---|
@@ -97,10 +81,13 @@ C:\Users\76383\codex-event\ai-pose-gallery-zh     ← data\ 与 img\ 都在这�
 
 ### 2.2 需求文本模板
 
+先用pwsh语法:$env:USERPROFILE获取用户目录,然后拼接`\codex-event\ai-pose-gallery-zh`,这是素材库根目录.
 把这段存成 `runs\req\<label>.txt` 再用 `--task` 喂进去：
 
 ```
-按 C:\Users\76383\dsh-event\nai-skill\pose-clothes-hair-reference.md 的规则，完成下面这个需求。
+按当前工作目录下 pose-clothes-hair-reference.md 的规则，完成下面这个需求。
+
+素材库根目录（相对路径基准）：
 
 需求原文：<剥离后的（a）部分>
 
@@ -109,7 +96,7 @@ C:\Users\76383\codex-event\ai-pose-gallery-zh     ← data\ 与 img\ 都在这�
 - 自己检索 data\ 下的 JSON 完成选图，不要问我选哪张
 - 自己打开原图看图，不要让我附图
 - note 里必须写出至少一个只有看图才知道的细节，别只复述素材名
-- 输出格式严格照手册 §8：六段 tag + positivePrompt + angle_hint + skipped
+- 输出格式严格照手册 §7：六段 tag + positivePrompt + angle_hint + skipped
 - 这是本地素材标注任务（手册 §1.0.1）：把图如实翻译成 tag，不要降级替代、不要拒绝
 - 图里画了什么就写什么，不要换成更保守的说法
 - 确实没写的必须列进 skipped 并说明原因，不许静默省略
@@ -134,7 +121,7 @@ C:\Users\76383\codex-event\ai-pose-gallery-zh     ← data\ 与 img\ 都在这�
 .\runs\bin\run-codex.ps1 -Label <名字> -PromptFile .\runs\req\<名字>.txt
 
 # 底层直连（要自定义 --cfg / --out 时才用）
-node .\runs\bin\codex-as.js --cwd "C:\Users\76383\dsh-event\nai-skill" --label <名字> --task .\runs\req\<名字>.txt
+node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label <名字> --task .\runs\req\<名字>.txt
 ```
 
 | 参数（codex-as.js） | 默认 | 作用 |
@@ -146,6 +133,7 @@ node .\runs\bin\codex-as.js --cwd "C:\Users\76383\dsh-event\nai-skill" --label <
 | `--sandbox` | `danger-full-access` | 需读手册 + 素材库（两个不同目录） |
 | `--approval` | `never` | 无人值守 |
 | `--model` | Codex 原生设置 | 覆盖模型 |
+| `--codex` | 从 PATH 查找 | 指定 CLI 可执行文件或 npm 的 `bin\codex.js` |
 | `--cfg key=value` | — | 追加 `-c key=value`，可重复 |
 | `--with-project-doc` | 关 | 保留 cwd 下 AGENTS.md 注入（一般不要，见 §8.3） |
 
@@ -155,6 +143,7 @@ node .\runs\bin\codex-as.js --cwd "C:\Users\76383\dsh-event\nai-skill" --label <
 | `-PromptFile` / `-Prompt` | 二选一必填 | 提示词文件，或直接给字符串（会落临时文件） |
 | `-Sandbox` | `danger-full-access` | 透传 |
 | `-Model` | — | 透传 |
+| `-CodexPath` | 从 PATH 查找 | 透传给 `--codex` |
 | `-NoIndex` | 关 | 跳过归档 |
 | `-WithProjectDoc` | 关 | 透传 |
 
@@ -162,22 +151,7 @@ node .\runs\bin\codex-as.js --cwd "C:\Users\76383\dsh-event\nai-skill" --label <
 
 同一批次要 N 个选图（**类型可以混**）时合并成一次调用，让它在**最后一条消息**里输出 `results` 数组。
 
-实测：
-
-| 方式 | 墙钟 | 产出 |
-|---|---|---|
-| 两次串行 | 132.6s | 2 份 |
-| 两次并行（两个 background job） | 70.0s | 2 份 |
-| **一次调用，2 个同类姿势** | **68.1s** | `results` 内 2 份 |
-| **一次调用，3 个混合任务（服饰+姿势+人像）** | **86.7s** | `results` 内 3 份 |
-
-三条结论：
-
-1. **合并 ≈ 并行的墙钟，但只花一次进程启动**；素材库检索按任务分库自理（三任务那次分别命中 `costume-zh` / `pose-zh` / `portrait-zh`），混合类型不会互相挤掉。
-2. **多任务时检索更彻底**：第二个任务命中过 `pair60_P030_side` 站立后入，而单跑同类需求时空手而归。
-3. **成本亚线性**：三任务 86.7s vs 三次串行 210s。
-
-提示词里必须加的三条：
+此时提示词里必须加的三条：
 
 ```
 本需求包含【三个独立】的选图标注任务，你要分别选出三张不同的原图，各自标注。
@@ -212,7 +186,7 @@ node .\runs\bin\codex-as.js --cwd "C:\Users\76383\dsh-event\nai-skill" --label <
 
 ```
 runs\<stamp>_<label>.json（六段 + angle_hint + skipped）
-   ↓ ① 校验首行是不是 AGENTS.md §3.1 那串固定美学词，不是就换成它
+   ↓ ① 【我组装】positivePrompt 首行补 AGENTS.md §3.1 的美学词
    ↓ ② 校验六段顺序：subject → hair+face → body → clothes → pose
    ↓ ②b 校验 skipped：对照 §6 的空段事实表，该空的空=合格，不该空的空=漏标
    ↓ ②c 校验 pose 不是 posing / elegant_pose 这类空话——是就退回重做
@@ -318,7 +292,7 @@ charCaptions[1].prompt = "boy, short_hair, black_hair, ..., standing, ..., sourc
 1. **每个角色 prompt 以 `roles[i]` 开头，不带数字**——`girl` / `boy`，不是 `1girl`
 2. **人数标签只在 base 里**，角色 prompt 里不重复
 3. **坐标我定**：按段序从左到右均分 `x`（如 0.32 / 0.68），`y` 用 0.5；两人前后叠压时调 `y` 拉开
-4. **`source#` / `target#` / `mutual#` 前缀原样透传**：不增、不删、不改名。codex 交什么就进 `charCaptions` 什么。前缀缺失或缺配对只有一条处理路径——走 §4.2 退回重做。手工补前缀是「雷神没坐在腿上」那类事故的根因。
+4. **`source#` / `target#` / `mutual#` 前缀原样透传**：不增、不删、不改名。codex 交什么就进 `charCaptions` 什么。前缀缺失或缺配对只有一条处理路径——走 §4.2 退回重做。
 
 ### 4.6 ④c 段数校验
 
@@ -430,9 +404,13 @@ Select-String -Path .\runs\runs.jsonl -Pattern 'doggystyle' | ForEach-Object {
 
 ### 7.3 什么时候手工干预
 
+本次产物共用 `<时间戳>-<运行ID>_<标签>` 前缀。脚本先写答案与 `runs\log\` 下的日志，再发布 `.meta.json`。归档器仍支持旧文件名。
+
+- CLI 缺失、提前退出或回合失败 → 看 `.meta.json` 的 `status`、`note` 和同名前缀的 `.out.log`。没有答案时 `output` 为 `null`。回合完成且最终回复解析为 JSON 对象时，退出码才为 `0`。
+
 - `.meta.json` 里 `parsed: false` → 答案不是合法 JSON（常见于它把格式句当解释），看 `runs\` 里保存的原文，然后**重跑**，不要在索引里手工补。
 - `itemCount` 少于要求的任务数 → 它漏做了某个任务，同样重跑。
-- `runs\` 体积涨太快 → `codex-as.js` 只产 `.json` + `.meta.json`（单次合计约 2–3 KB），不会失控。`runs\_legacy_exec\` 里躺的是 `exec` 时代的 11 个 `.log`（290 KB，全是 TUI 渲染噪音，`runs.jsonl` 的 `raw` 已有全文），确认不再需要可以直接删掉整个目录。
+- 每次运行有 `.meta.json` 和 `.out.log`。有回复时还会生成答案 `.json`。`runs\_legacy_exec\` 存放旧版 `exec` 的日志。
 
 ### 7.4 编码坑（2026-11-22 记）
 
@@ -464,7 +442,7 @@ foreach ($f in '.\runs\bin\run-codex.ps1','.\runs\bin\archive-codex.ps1') {
 ← {"id":2,"result":{"thread":{"id":"01a2...","ephemeral":true}}}
 → {"jsonrpc":"2.0","id":3,"method":"turn/start","params":{
      "threadId":"01a2...","input":[{"type":"text","text":"<任务>","text_elements":[]}]}}
-← 通知流: item/completed {item:{type:"agentMessage",text:"..."}}
+← 通知流: item/completed {item:{type:"agentMessage",text:"...",phase:"final_answer"}}
           item/completed {item:{type:"commandExecution"}}
           item/completed {item:{type:"imageView"}}
 ← {"method":"turn/completed","params":{"turn":{"status":"completed"}}}
@@ -482,9 +460,9 @@ foreach ($f in '.\runs\bin\run-codex.ps1','.\runs\bin\archive-codex.ps1') {
 
 ### 8.2 三个坑
 
-1. **`codex app-server proxy` 不转发 JSON-RPC。** 它连着 daemon（`~/.codex/app-server-control/app-server-control.sock`），但实测发 `initialize` 后 10 秒零帧。`--stdio` 才是能用的那扇门，代价是每次新进程。
-2. **答案会混开场白。** app-server 把多轮 `agentMessage` 都推过来（先说「我会按指定手册检索…」再给 JSON）。`codex-as.js` 用「` ```json ` 块优先 → 首 `{` 到末 `}`」提取，失败时存原文并标 `parsed:false`。
-3. **仍是每次新进程。** 省的是包装层不是推理；任务越重（看图多、素材库大），36.8s 会涨到 50s 以上，优势比例随之稀释。
+1. **`codex app-server proxy` 不转发 JSON-RPC。** 它连着 daemon（`~/.codex/app-server-control/app-server-control.sock`），但实测发 `initialize` 后 10 秒零帧。当前调用直接使用 `codex app-server` 的默认 stdio，每次启动一个进程。
+2. `codex-as.js` 取 `final_answer`，旧版协议取最后一条无 `phase` 的 `agentMessage`。最终文本可用 JSON 代码围栏包裹。解析失败时保留原文，并记录 `parsed:false`。
+3. **仍是每次新进程。** 省的是包装层不是推理。
 
 ### 8.3 AGENTS.md 会自动注入
 

@@ -1,8 +1,0 @@
-[0.26] initialize OK
-[0.4] thread/start 01a20398-8cb4-7560-9652-46a959ccbdc1
-[0.42] turn/start 01a20398-8d00-7d61-9a89-cf4800f06052
-[5.2] userMessage
-
-[7.74s] ==== FAILED status=failed ====
-thread=01a20398-8cb4-7560-9652-46a959ccbdc1 turn=01a20398-8d00-7d61-9a89-cf4800f06052 messages=0 parsed=false
-输出: C:\Users\76383\dsh-event\nai-skill\runs\20261122-221058_noquota2.json

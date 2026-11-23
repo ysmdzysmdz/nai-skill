@@ -28,8 +28,6 @@
 
 ## 2. 素材地图
 
-根目录（相对路径基准）：`C:\Users\76383\codex-event\ai-pose-gallery-zh`
-
 | 库 | 清单 | 条数 | 图 |
 |---|---|---|---|
 | 姿势 | `data\pose-zh.json` | 1439 | `img\*.png` 本地 ✅ |
@@ -142,7 +140,7 @@
 
 `subject` 例外：合并写 `1girl, 1boy, couple`，不拆段。
 单人不出现 `|`。
-多角色时 `positivePrompt` **只有 base**（美学词 + 人数 + 站位句），**角色特征全部留在 `tags` 的管道段里**。
+多角色时 `positivePrompt` **只有 base**（人数 + 站位句），**角色特征全部留在 `tags` 的管道段里**。
 **两人发色发型必须不同**，否则会串成同一个人。
 
 ### 6.1 跨人标签：判定 + 前缀 + 映射
@@ -199,7 +197,7 @@
   },
   "angle_hint": "斜侧",
   "skipped": ["两张脸只有定位线，瞳色表情无法辨认，face 两段留空"],
-  "positivePrompt": "ultra complexity, ... (美学词)\n1girl, 1boy, couple\nOne character stands behind the other, who bends forward with palms on the floor.",
+  "positivePrompt": "1girl, 1boy, couple\nOne character stands behind the other, who bends forward with palms on the floor.",
   "uncertain": [],
   "note": "角色1 在前双手撑地、双膝悬空；角色2 在后站立，一只手搭在对方臀上"
 }
@@ -209,10 +207,9 @@
 
 **六段**：`subject` 人数 / `hair` 发长发色发型发饰 / `face` 瞳色表情 / `body` 体型（含暴露程度）/ `clothes` 单品 / `pose` 姿态+手部位置。**没有 background、camera、lighting、negative_weights。**
 
-**`positivePrompt` 七组，组间真实换行**：
-① 首行固定美学词，一字不改：`ultra complexity, high complexity, best quality, amazing quality, masterpiece, top aesthetic, highres, absurdres, highly detailed`
-② subject ③ hair+face ④ body ⑤ clothes ⑥ pose ⑦ 自然语言补充（可选）
-**多角色**：③–⑥ 不进 `positivePrompt`，只在 ⑦ 补一句站位。到 ⑥/⑦ 就结束，不追加背景、镜头、`-2::` 尾巴。
+**`positivePrompt` 六组，组间真实换行**：
+① subject ② hair+face ③ body ④ clothes ⑤ pose ⑥ 自然语言补充（可选）
+**多角色**：②–⑤ 不进 `positivePrompt`，只在 ⑥ 补一句站位。到 ⑤/⑥ 就结束，不追加背景、镜头、`-2::` 尾巴。
 
 **其他硬要求**
 - 全英文、下划线、小写，**不许连字符**（`lace-trimmed_legwear` ❌ → `lace_trim` ✅）
@@ -270,11 +267,11 @@
 - [ ] 元数据逐项对照过；没有复合臆造 tag
 - [ ] 无 `background`/`camera`/`lighting`；无 `white_background`/`studio`
 - [ ] `subject` 只有人数；`angle_hint` 有写；`角度` 没转镜头 tag
-- [ ] 首行美学词一字不差；六段顺序正确；无画风词
+- [ ] 六段顺序正确；无画风词
 - [ ] `note` 不是素材名复述
 - [ ] **双人**：六段都拆、段数 = 人数、空段留位
 - [ ] **双人**：`roles` 已给且段序一致
-- [ ] **双人**：`positivePrompt` 只有美学词+人数+站位
+- [ ] **双人**：`positivePrompt` 只有人数+站位
 - [ ] **双人**：两人发色发型不同
 - [ ] **双人**：按 §6.1 逐人核对——所有跨人标签有前缀且两端都在，裸 `sitting_on_lap`/`hug`/`hand_on_another's_*`/性交位一律不合格
 - [ ] **双人**：单人专属标签（`spread_legs`/`knees_bent`/`arched_back`/`hands_on_own_knees`）没被误加前缀
