@@ -1,0 +1,29 @@
+{
+  "source": {
+    "library": "costume-zh",
+    "id": "LNG-0105",
+    "image": "C:\\Users\\76383\\codex-event\\ai-pose-gallery-zh\\img\\costume\\LNG-0105.webp"
+  },
+  "roles": [
+    "girl"
+  ],
+  "tags": {
+    "subject": "1girl, solo",
+    "hair": "",
+    "face": "",
+    "body": "slim_waist, wide_hips, midriff, bare_thighs",
+    "clothes": "lingerie, navy_blue, blue_bra, blue_panties, sheer, lace_trim, star_print, bow_bra, bow_panties, blue_thighhighs, blue_high_heels, ankle_strap, gold_necklace, pendant",
+    "pose": "standing, legs_together"
+  },
+  "positivePrompt": "ultra complexity, high complexity, best quality, amazing quality, masterpiece, top aesthetic, highres, absurdres, highly detailed\n1girl, solo\n\nslim_waist, wide_hips, midriff, bare_thighs\nlingerie, navy_blue, blue_bra, blue_panties, sheer, lace_trim, star_print, bow_bra, bow_panties, blue_thighhighs, blue_high_heels, ankle_strap, gold_necklace, pendant\nstanding, legs_together\nGold stars and tiny dots decorate the sheer navy bra cups, briefs and tulle thighhighs. A hollow gold star hangs from the bow between the underwired cups. Each hip has a matching bow and dangling star. The stockings have wide opaque tops. The pointed satin heels have narrow ankle straps with gold buckles on the outside. A fine gold necklace carries a starburst pendant.",
+  "angle_hint": "正面",
+  "skipped": [
+    "hair、face 留空。原图用无头人台展示穿搭，发型、发色、瞳色和表情均不可见。",
+    "手臂和双手没有呈现，pose 只标可见的站姿和腿位。",
+    "杯间与两髋的星坠位置、袜口的宽窄与透明度差异、鞋扣朝向缺少能准确表达这些关系的单一标签，已用 positivePrompt 末段补全。"
+  ],
+  "uncertain": [
+    "可见金色星点纹样，但无法确认是刺绣、贴饰还是印花。star_print 仅描述图案。"
+  ],
+  "note": "文胸两杯之间的藏青色小结垂着一颗镂空五角星，内裤两侧髋骨处也各有一个带星坠的蝴蝶结。项链坠是放射状星芒，形状和杯间的镂空星不同。"
+}

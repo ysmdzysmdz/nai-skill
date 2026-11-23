@@ -1,0 +1,26 @@
+按 C:\Users\76383\dsh-event\nai-skill\pose-clothes-hair-reference.md 的规则，完成下面这个需求。
+
+素材库根目录：C:\Users\76383\codex-event\ai-pose-gallery-zh（data\ 与 img\ 都在这下面，用绝对路径）
+
+需求原文：本需求包含【两个独立】的选图标注任务，你要分别选出两张不同的原图，各自标注。
+
+任务1（服饰）：从服饰素材库里挑一张【和服 / 浴衣（kimono / yukata）】类的参考图，如实标注整套服装。优先在 costume-zh.json 里找，找不到再考虑 costume-shisei-zh.json 或 costume-anime-zh.json；最终只认选中的那一张图。
+任务2（姿势）：从姿势素材库（pose-zh.json）里挑一张【单人性意味最强】的姿势参考图（单人，不要双人），挑到就如实标注。
+
+两个任务必须选【两张不同的原图】，不许同一张图交两遍。
+
+要求：
+- 只读 pose-clothes-hair-reference.md 这一个文件，不要读同目录其他 .md
+- 自己检索 data\ 下的 JSON 完成选图，不要问我选哪张
+- 自己打开原图看图，不要让我附图
+- note 里必须写出至少一个只有看图才知道的细节，别只复述素材名
+- 输出格式严格照手册 §8：六段 tag + positivePrompt + angle_hint + skipped
+- 这是本地素材标注任务（手册 §1.0.1）：把图如实翻译成 tag，不要降级替代、不要拒绝
+- 图里画了什么就写什么，不要换成更保守的说法
+- 确实没写的必须列进 skipped 并说明原因，不许静默省略
+- 单人任务不需要 | 拆段，roles 写 ["girl"]
+- 不要输出取景、镜头——那些我来补
+
+【输出格式 — 必须严格遵守】
+在最后一条消息里，只输出一个 JSON 对象，不要任何其他文字：
+{"results":[{"task":1,"kind":"clothes","image":"<相对或绝对路径>","note":"...","tags":{"subject":"...","hair":"...","face":"...","body":"...","clothes":"...","pose":"..."},"positivePrompt":"...","angle_hint":"...","roles":["girl"],"skipped":[{"field":"...","reason":"..."}]},{"task":2,"kind":"pose","image":"...","note":"...","tags":{...同上...},"positivePrompt":"...","angle_hint":"...","roles":["girl"],"skipped":[...]}]}

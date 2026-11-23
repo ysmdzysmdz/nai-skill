@@ -1,0 +1,45 @@
+{
+  "label": "ctxprobe2",
+  "elapsedSeconds": 11.28,
+  "cwd": "C:\\Users\\76383\\dsh-event\\nai-skill",
+  "sandbox": "danger-full-access",
+  "approvalPolicy": "never",
+  "model": null,
+  "threadId": "01a20371-9a03-78d1-86c8-a13b747e89f4",
+  "turnId": "01a20371-9a56-74d1-8629-b0071722573e",
+  "status": "completed",
+  "note": "status=completed",
+  "messageCount": 1,
+  "parsed": false,
+  "output": "20261122-212826_ctxprobe2.json",
+  "timeline": [
+    {
+      "at": 0.21,
+      "event": "initialize"
+    },
+    {
+      "at": 0.41,
+      "event": "thread/start",
+      "threadId": "01a20371-9a03-78d1-86c8-a13b747e89f4"
+    },
+    {
+      "at": 0.43,
+      "event": "turn/start",
+      "turnId": "01a20371-9a56-74d1-8629-b0071722573e"
+    },
+    {
+      "at": 6.62,
+      "event": "userMessage"
+    },
+    {
+      "at": 10.97,
+      "event": "agentMessage",
+      "chars": 4
+    },
+    {
+      "at": 11.28,
+      "event": "completed",
+      "note": "status=completed"
+    }
+  ]
+}

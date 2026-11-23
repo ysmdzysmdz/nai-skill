@@ -1,0 +1,78 @@
+{
+  "label": "lingerieA",
+  "elapsedSeconds": 73.53,
+  "cwd": "C:\\Users\\76383\\dsh-event\\nai-skill",
+  "sandbox": "danger-full-access",
+  "approvalPolicy": "never",
+  "model": null,
+  "threadId": "01a2037f-c9ff-7512-8210-8de2eb2464c8",
+  "turnId": "01a2037f-ca4a-77b1-8625-b7ba6d804c25",
+  "status": "completed",
+  "note": "status=completed",
+  "messageCount": 2,
+  "parsed": true,
+  "output": "20261122-214355_lingerieA.json",
+  "timeline": [
+    {
+      "at": 0.25,
+      "event": "initialize"
+    },
+    {
+      "at": 0.4,
+      "event": "thread/start",
+      "threadId": "01a2037f-c9ff-7512-8210-8de2eb2464c8"
+    },
+    {
+      "at": 0.42,
+      "event": "turn/start",
+      "turnId": "01a2037f-ca4a-77b1-8625-b7ba6d804c25"
+    },
+    {
+      "at": 5.23,
+      "event": "userMessage"
+    },
+    {
+      "at": 10.13,
+      "event": "agentMessage",
+      "chars": 34
+    },
+    {
+      "at": 11.12,
+      "event": "commandExecution"
+    },
+    {
+      "at": 17.76,
+      "event": "commandExecution"
+    },
+    {
+      "at": 25.34,
+      "event": "commandExecution"
+    },
+    {
+      "at": 32.26,
+      "event": "commandExecution"
+    },
+    {
+      "at": 39.3,
+      "event": "commandExecution"
+    },
+    {
+      "at": 45.01,
+      "event": "commandExecution"
+    },
+    {
+      "at": 50.34,
+      "event": "imageView"
+    },
+    {
+      "at": 73.44,
+      "event": "agentMessage",
+      "chars": 2030
+    },
+    {
+      "at": 73.53,
+      "event": "completed",
+      "note": "status=completed"
+    }
+  ]
+}

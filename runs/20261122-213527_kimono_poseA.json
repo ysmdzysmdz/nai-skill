@@ -1,0 +1,70 @@
+{
+  "results": [
+    {
+      "task": 1,
+      "kind": "clothes",
+      "image": "C:/Users/76383/AppData/Local/Temp/charadb-O177.jpg",
+      "note": "白色浴衣的袖口和下摆都有蓝色水纹，橙红色金鱼散在水纹之间，其中一条横跨前襟交叠处。藏青色宽腰带正面横系一根金黄色细绳，小结偏在画面右侧，背后的深蓝色蝴蝶结从画面左侧露出。脚上是黑底、红色人字带的木屐。",
+      "tags": {
+        "subject": "1girl, solo",
+        "hair": "medium_hair, brown_hair, blunt_bangs, hair_behind_ear",
+        "face": "",
+        "body": "",
+        "clothes": "yukata, white_kimono, wide_sleeves, fish_print, wave_print, obi, obijime, back_bow, geta",
+        "pose": "standing, arms_at_sides, heel_up"
+      },
+      "positivePrompt": "ultra complexity, high complexity, best quality, amazing quality, masterpiece, top aesthetic, highres, absurdres, highly detailed\n1girl, solo\nmedium_hair, brown_hair, blunt_bangs, hair_behind_ear\n\nyukata, white_kimono, wide_sleeves, fish_print, wave_print, obi, obijime, back_bow, geta\nstanding, arms_at_sides, heel_up\nOrange goldfish swim among pale and dark blue ripples on the white summer yukata. The hem reaches her ankles. A thin golden cord crosses the navy obi and ties just off center. The obi forms a bow at the back. She wears black geta with red thong straps on bare feet.",
+      "angle_hint": "斜侧",
+      "roles": [
+        "girl"
+      ],
+      "skipped": [
+        {
+          "field": "face",
+          "reason": "瞳色和表情属于占位模特的面部特征，不属于这套服饰。"
+        },
+        {
+          "field": "body",
+          "reason": "体型属于占位模特。衣摆长度及赤足穿木屐的穿法已在补充句注明。"
+        }
+      ]
+    },
+    {
+      "task": 2,
+      "kind": "pose",
+      "image": "C:/Users/76383/codex-event/ai-pose-gallery-zh/img/full_sexy_P055_front.png",
+      "note": "人物仰卧，双腿高举并向两侧大幅张成 V 字，两膝接近伸直，双脚掌都露出。两臂屈肘，左右手各从外侧握住同侧大腿，拇指落在大腿前面，握点都在膝盖与髋部之间。",
+      "tags": {
+        "subject": "1girl, solo",
+        "hair": "",
+        "face": "",
+        "body": "nude, breasts, bare_legs, barefoot, soles",
+        "clothes": "",
+        "pose": "lying, on_back, legs_up, spread_legs, arms_bent, hands_on_own_thighs"
+      },
+      "positivePrompt": "ultra complexity, high complexity, best quality, amazing quality, masterpiece, top aesthetic, highres, absurdres, highly detailed\n1girl, solo\n\nnude, breasts, bare_legs, barefoot, soles\n\nlying, on_back, legs_up, spread_legs, arms_bent, hands_on_own_thighs\nShe lies on her back with both legs raised and spread in a wide V, knees nearly straight and both soles visible. Each hand grips the outer side of the corresponding thigh above the knee, with the thumb resting across the front.",
+      "angle_hint": "正面",
+      "roles": [
+        "girl"
+      ],
+      "skipped": [
+        {
+          "field": "hair",
+          "reason": "姿势模型没有绘出头发，无法标注发型或发色。"
+        },
+        {
+          "field": "face",
+          "reason": "头部只有交叉定位线，无法辨认瞳色、视线或表情。"
+        },
+        {
+          "field": "body",
+          "reason": "胸部和骨盆只绘出体块轮廓，没有可辨认的乳头或外生殖器细节。"
+        },
+        {
+          "field": "clothes",
+          "reason": "姿势模型没有绘出服装或鞋袜。"
+        }
+      ]
+    }
+  ]
+}

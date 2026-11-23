@@ -1,0 +1,28 @@
+{
+  "source": {
+    "library": "pose-zh",
+    "id": "pair60_P004_side",
+    "image": "C:\\Users\\76383\\codex-event\\ai-pose-gallery-zh\\img\\pair60_P004_side.png"
+  },
+  "roles": ["boy", "girl"],
+  "tags": {
+    "subject": "1boy | 1girl",
+    "hair": " | ",
+    "face": " | ",
+    "body": "nude, muscular_male | nude",
+    "clothes": " | ",
+    "pose": "kneeling, leaning_forward, head_down, source#missionary, target#legs_on_shoulders, mutual#holding_hands | lying, on_back, legs_up, knees_bent, spread_legs, target#missionary, source#legs_on_shoulders, mutual#holding_hands"
+  },
+  "positivePrompt": "ultra complexity, high complexity, best quality, amazing quality, masterpiece, top aesthetic, highres, absurdres, highly detailed\n1boy, 1girl, couple\nThe man kneels between the woman's raised thighs and leans forward over her, holding both her hands as she lies on her back with her legs bent and one foot visible against his shoulder beside his neck.",
+  "angle_hint": "侧面",
+  "skipped": [
+    "hair、face 两栏按角色留空。两具人偶都未绘出头发，脸上只有定位线，无法辨认发型、发色、瞳色或表情。",
+    "clothes 两段留空。原图为无衣物的人偶姿势图，裸露状态已写入 body。",
+    "未标 pinning。男方俯身在上，胸腹之间仍有空隙，双方握手处也未见按压。",
+    "未标插入或生殖器接触。图中骨盆区域被肢体遮挡，人偶未绘出生殖器细节。"
+  ],
+  "uncertain": [
+    "素材名写双腿搭肩。侧面原图能确认女方一只脚搭在男方颈侧的肩上，另一只脚的落点被遮挡。"
+  ],
+  "note": "左侧男方双膝着地，小腿向后折，俯身握住右侧仰卧女方的双手。女方靠近的一侧手肘贴地，前臂几乎竖直举起；同侧抬起的脚越过男方肩头，脚趾露在他的后颈旁。"
+}

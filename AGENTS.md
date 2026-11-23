@@ -10,6 +10,7 @@
 补充文件:
 > - (一定要看)锁定角色的外观和服饰tag -> [`query-character-tag.md`](query-character-tag.md)
 > - (根据用户指令,当用户说'从我喜欢的角色中选一个'之类的话再看)用户喜欢的角色表 -> [`liked-characters.md`](liked-characters.md)
+> - (根据用户指令,当用户说'从我本地素材库中随机选一个性感服饰/让codex挑个服装'之类的话再看')用户的本地的素材库的使用方法(调用codex) -> [`codex-invoke.md`](codex-invoke.md)
 ---
 
 ## 0. 总则
@@ -110,6 +111,7 @@ artist:inushima, artist:re:shimashima, year 2025, year 2026
 
 - 指定艺术家:`artist:NAME`,或混合多位 `artist:xxx, artist:yyy`
 - 艺术家 + 年份:`artist:xxx, year 2025, year 2026`(两个 year 一起写)
+- roll一个
 - 画风描述:如 `traditional chinese painting aesthetic, watercolor ink accents`
 - 留空(纯模型默认审美)
 
@@ -172,6 +174,26 @@ from_above, cowboy_shot, centered, dynamic_angle
 - 它们没有特殊语法,加权重照常(`0.5::location::`).
 - 默认 medium 是 V5,标 V5 only 的都能用;切到 V4 系则只有 `location` 可用.
 
+### 3.3 背景:归 agent 设计
+
+**分工**:codex 只交服装和姿势;素材图里的白底/灰底是**陈列环境,不是画面背景**. 背景一律由我设计,不丢给用户从零拍板,也不问「白底还是卧室」这种二选一.
+
+**背景不是一个 tag,是三层配方**:
+
+| 层 | 写什么 | 例子 |
+| --- | --- | --- |
+| **环境层** | 地点、家具、材质 | `dressing_room`, `concrete_wall`, `poolside` |
+| **光源层** | 光向、色温、硬软 | `window_light`, `hard_light`, `neon_lights`, `rim_light` |
+| **空气层** | 粒子、雾、反光、景深 | `dust_motes`, `steam`, `bokeh`, `water_drops_on_glass` |
+
+三层各取 1–2 个 tag 拼成 BACKGROUND 组. 展示提示词时**默认给 2–3 个方案供挑**.
+
+**风险与压制**
+
+- **招牌/书本/海报/衣柜标签容易生字** → 一律 `-2::text::`.
+- **多光源混色会脏肤色** → 只留一个主光方向 + 一个补光,不要三色齐上.
+- **内衣/泳装品类** → `-2::modern_clothes::` 可能连设计一起压掉,这类题材要慎用或去掉.
+
 ---
 
 ## 4. 负面提示词:按模型分叉
@@ -192,11 +214,12 @@ from_above, cowboy_shot, centered, dynamic_angle
 ## 5. 生成流程(固定顺序)
 
 0. **定模型 + 定人数**:默认 medium,参数用 §1.2、模板用 §7;切换模型读对应文件;**多角色先读 [`multi-character.md`](multi-character.md)**.
+0b. **清桌面角色槽**:桌面会残留上一次生成的角色槽(`charCaptions`),它和本次提示词无关但会被一起送进生成,单角色图会变成双人图. 单角色请求一律在 `enqueue_generation` 里显式传 `"charCaptions": []`;**生成前先用 `get_state` 看一眼**当前 `charCaptions` 是不是空的,非空就直接清,不要靠上次的返回值碰运气.
 1. 解析需求 → 判定尺寸与分组结构.
 2. **询问 stylePrompt 风格取向**(§2).
-3. 输出**完整提示词**给用户看:正面(分组展示)+ 负面(增量部分)+ 参数表;多角色时**逐个角色列出 prompt 和坐标**.
+3. 输出**完整提示词**给用户看:正面(分组展示)+ 负面(增量部分)+ 参数表;多角色时**逐个角色列出 prompt 和坐标**. **背景由我设计并按 §3.3 给 2–3 个方案供挑**,不要只丢一个白底让用户自己定.
 4. **等用户确认**. 未确认不调用 `enqueue_generation`.
-5. 确认后生成 **1 张**,`count: 1`.
+5. 确认后生成 **1 张**,`count: 1`,**并显式带上 `"charCaptions": []`**(见 0b;多角色时这里才换成拆好的角色数组).
 6. 出图后给出文件绝对路径 + 内嵌预览,附一句可复用的调整建议.
 7. **超时上限 20 秒**:一般而言,生成一张图最长需要 20s.若轮询超过 20s 仍未完成,**停止等待并提醒用户是否重试**,不要无限轮询或静默挂起.
 
@@ -218,7 +241,9 @@ from_above, cowboy_shot, centered, dynamic_angle
 - [ ] 尺寸符合 §1.1(或用户明示)
 - [ ] 正面开头有 `ultra complexity, high complexity, best quality, amazing quality, masterpiece, top aesthetic, highres, absurdres, highly detailed`
 - [ ] 分组为「人物 → 头发面部 → 身体 → 服饰 → 姿势 → 背景 → 镜头」
+- [ ] 背景已按 §3.3 三层配方设计,并给了 2–3 个方案(不是只给白底)
 - [ ] 负面处理符合 §4(medium 下已改为正面负权重)
+- [ ] 单角色已显式传 `"charCaptions": []`,且 `get_state` 确认桌面角色槽已空(见 §5 0b)
 - [ ] `count: 1`
 - [ ] requestId 唯一(`<主题>-<尺寸>-<日期>-<序号>`)
 - [ ] `maxAnlas` 设 120
@@ -226,7 +251,7 @@ from_above, cowboy_shot, centered, dynamic_angle
 出图后:
 
 - [ ] 从提交到出图在 20s 内完成;超时则停止轮询并询问用户是否重试
-- [ ] 用 `list_outputs` 或直接读 `C:\Users\%username%\Pictures\svn\YYYYMMDD\` 拿绝对路径
+- [ ] 用 `list_outputs` 拿绝对路径
 - [ ] 内嵌预览图并在正文说明选择理由
 - [ ] 告知实际消耗
 
@@ -252,6 +277,7 @@ from_above, cowboy_shot, centered, dynamic_angle
     "negativePrompt": "",
     "stylePrompt": "artist:xxx, artist:yyy, year 2025, year 2026"
   },
+  "charCaptions": [],
   "count": 1,
   "maxAnlas": 120
 }

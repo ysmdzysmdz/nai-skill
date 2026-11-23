@@ -1,0 +1,41 @@
+{
+  "results": [
+    {
+      "task": 1,
+      "kind": "clothes",
+      "image": "C:\\Users\\76383\\codex-event\\ai-pose-gallery-zh\\img\\costume\\LNG-0106.webp",
+      "note": "黑色钢圈文胸的两只罩杯上，金色星芒散布在从杯底向上展开的点线之间。两条细黑带分别从肩带斜接到鸡心处，在中央的金色星饰上方形成深 V。配套三角内裤前片是透肤花卉蕾丝，腰口正中也有一颗金星。独立的黑色蕾丝吊袜腰带带有同款星纹，下缘中央向上拱起，与内裤腰口之间留出空隙。正面可见两条竖直吊袜带，各带金色调节扣，分别扣在黑色透肤长筒袜的宽花边袜口上。鞋为亮面黑色尖头高跟鞋，细踝带在脚踝外侧扣合。",
+      "tags": {
+        "subject": "1girl, solo",
+        "hair": "",
+        "face": "",
+        "body": "midriff",
+        "clothes": "lingerie, black_bra, black_panties, lace, star_print, garter_belt, garter_straps, black_thighhighs, sheer_legwear, lace_trim, black_high_heels, ankle_strap",
+        "pose": ""
+      },
+      "positivePrompt": "ultra complexity, high complexity, best quality, amazing quality, masterpiece, top aesthetic, highres, absurdres, highly detailed\n1girl, solo\n\nmidriff\nlingerie, black_bra, black_panties, lace, star_print, garter_belt, garter_straps, black_thighhighs, sheer_legwear, lace_trim, black_high_heels, ankle_strap\n\ntwo thin black straps run diagonally from the shoulder straps to a gold star at the center of the underwire bra. gold stars and dotted lines fan upward from the base of each sheer cup. the matching briefs have a sheer floral lace front with a gold star at the waist. the scalloped garter belt arches above the briefs. two visible front garter straps with gold sliders clip to the wide floral lace tops of the sheer black stockings. the glossy black pointed toe heels have slim ankle straps that buckle on the outside.",
+      "angle_hint": "正面",
+      "roles": [
+        "girl"
+      ],
+      "skipped": [
+        {
+          "field": "hair",
+          "reason": "原图未展示头部，无可辨认的头发或发饰。"
+        },
+        {
+          "field": "face",
+          "reason": "原图未展示面部，无法标注瞳色或表情。"
+        },
+        {
+          "field": "body",
+          "reason": "仅标注文胸与腰带之间露出的腰腹。展示人台的轮廓不作为人物体型参考。"
+        },
+        {
+          "field": "pose",
+          "reason": "本项仅取服饰结构。双腿用于陈列吊袜带、丝袜和鞋，图中未展示手部。"
+        }
+      ]
+    }
+  ]
+}

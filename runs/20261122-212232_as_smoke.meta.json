@@ -1,0 +1,66 @@
+{
+  "label": "as_smoke",
+  "elapsedSeconds": 50.19,
+  "cwd": "C:\\Users\\76383\\dsh-event\\nai-skill",
+  "sandbox": "danger-full-access",
+  "approvalPolicy": "never",
+  "model": null,
+  "threadId": "01a2036c-3548-76b2-ab31-2355883b7613",
+  "turnId": "01a2036c-3593-7b60-8ebc-7fe8f723d508",
+  "status": "completed",
+  "note": "status=completed",
+  "messageCount": 2,
+  "parsed": true,
+  "output": "20261122-212232_as_smoke.json",
+  "timeline": [
+    {
+      "at": 0.21,
+      "event": "initialize"
+    },
+    {
+      "at": 0.4,
+      "event": "thread/start",
+      "threadId": "01a2036c-3548-76b2-ab31-2355883b7613"
+    },
+    {
+      "at": 0.42,
+      "event": "turn/start",
+      "turnId": "01a2036c-3593-7b60-8ebc-7fe8f723d508"
+    },
+    {
+      "at": 5.23,
+      "event": "userMessage"
+    },
+    {
+      "at": 9.78,
+      "event": "agentMessage",
+      "chars": 33
+    },
+    {
+      "at": 10.74,
+      "event": "commandExecution"
+    },
+    {
+      "at": 15.74,
+      "event": "commandExecution"
+    },
+    {
+      "at": 25.1,
+      "event": "commandExecution"
+    },
+    {
+      "at": 29.78,
+      "event": "imageView"
+    },
+    {
+      "at": 50.08,
+      "event": "agentMessage",
+      "chars": 1675
+    },
+    {
+      "at": 50.19,
+      "event": "completed",
+      "note": "status=completed"
+    }
+  ]
+}

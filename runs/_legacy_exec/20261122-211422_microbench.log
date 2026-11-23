@@ -1,0 +1,19 @@
+OpenAI Codex v0.171.0
+--------
+workdir: C:\Users\76383\dsh-event\nai-skill
+model: gpt-6.2-astra
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR] (network access enabled)
+reasoning effort: low
+reasoning summaries: none
+session id: 01a20364-baee-7f73-97d3-d3f2b2cdfc72
+--------
+user
+只输出一行 JSON，不要任何其他文字：{"ok":true}
+
+codex
+{"ok":true}
+{"ok":true}
+tokens used
+4,085

@@ -1,0 +1,27 @@
+{
+  "source": {
+    "library": "pose-zh",
+    "id": "pair60_P062_diag",
+    "image": "C:\\Users\\76383\\codex-event\\ai-pose-gallery-zh\\img\\pair60_P062_diag.png"
+  },
+  "roles": ["girl", "boy"],
+  "tags": {
+    "subject": "1girl | 1boy",
+    "hair": " | ",
+    "face": " | ",
+    "body": "nude, slim, breasts | nude, muscular_male",
+    "clothes": " | ",
+    "pose": "sitting, knees_bent, spread_legs, source#sitting_on_lap, source#straddling, source#upright_straddle, source#girl_on_top, source#legs_around_waist, source#arms_around_neck, mutual#face_to_face | sitting, crossed_legs, target#sitting_on_lap, target#straddling, target#upright_straddle, target#girl_on_top, target#legs_around_waist, target#arms_around_neck, mutual#face_to_face"
+  },
+  "positivePrompt": "ultra complexity, high complexity, best quality, amazing quality, masterpiece, top aesthetic, highres, absurdres, highly detailed\n1girl, 1boy, couple\nThe woman on the left sits astride the lap of the cross-legged man on the right, facing him with her thighs around his waist and her arms around his neck.",
+  "angle_hint": "斜侧",
+  "skipped": [
+    "hair、face 两段留空。两人都是姿势模型，头部只有轮廓、耳朵和定位线，无法辨认发型、发色、瞳色、表情或视线。",
+    "clothes 两段留空。原图未画衣物，裸露状态已记入 body。",
+    "女方近侧大腿遮住两人骨盆相接处。面对面跨坐可见，性器是否贴合、是否插入均无法核实。",
+    "男方近侧前臂伸入两人腿间的遮挡区，手指落点不可见，无法标注触碰下体或具体承托部位。",
+    "两人面部之间留有空隙，未标注接吻。图中也未见口交或将对方压在身下的动作。"
+  ],
+  "uncertain": [],
+  "note": "左侧女方跨坐在右侧男方腿上，双臂绕过他的脖子，近侧手的指尖沿他肩后向下弯。男方盘腿，一只脚横伸向左，另一只脚的脚趾从交叠的小腿下方露出。女方近侧膝盖抬到他肘弯内侧，小腿从膝下斜向左下折回。"
+}

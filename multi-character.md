@@ -10,8 +10,7 @@
 
 - 多角色提示词是 **V4 及以上**才有的功能.
 - 官方口径:**V5 最多 22 个角色,V4 / V4.5 最多 6 个**.
-- 本 MCP 的 `charCaptions` 数组 schema 允许 **32** 个(工具描述写的是 "V5 allows 32"),与官方 22 有出入.
-  **以 22 为实际上限**,实操稳定区间是 **2–4 人**,超过 4 人基本会糊.
+- 本 MCP 的 `charCaptions` 数组 schema 允许 **32** 个(工具描述写的是 "V5 allows 32"),**以 22 为实际上限**.
 
 ---
 
@@ -93,6 +92,8 @@ base:      2girls, side_by_side, indoors, stage, stage_lights, cowboy_shot
 - 例:A 搂 B → A 写 `source#hug`,B 写 `target#hug`;互相搂 → 两边都写 `mutual#hug`.
 - 官方明确说这个语法**不一定可靠**,要配合自然语言补一句(如 `She is hugging the other girl.`).
 - 引用的官方示例里还用了 `target#pointing` / `source#pointing at another` 这类写法,交互动作都可以套.
+
+**前缀由 codex 在素材转换阶段给出,不是我事后补.** 完整判定口径、方向约定和映射表(坐腿 / 跨坐 / 膝枕 / 拥抱 / 性交位 …)见 [`pose-clothes-hair-reference.md`](pose-clothes-hair-reference.md) §7.5.1;我这边只做透传 + 校验(见 [`codex-invoke.md`](codex-invoke.md) §4 ②d).
 
 ---
 

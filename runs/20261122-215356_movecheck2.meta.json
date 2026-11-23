@@ -1,0 +1,70 @@
+{
+  "label": "movecheck2",
+  "elapsedSeconds": 57.53,
+  "cwd": "C:\\Users\\76383\\dsh-event\\nai-skill",
+  "sandbox": "danger-full-access",
+  "approvalPolicy": "never",
+  "model": null,
+  "threadId": "01a20388-f2d6-7472-8b2b-909753ae1a85",
+  "turnId": "01a20388-f33f-7b20-88d5-f59a6df95aac",
+  "status": "completed",
+  "note": "status=completed",
+  "messageCount": 2,
+  "parsed": true,
+  "output": "20261122-215356_movecheck2.json",
+  "timeline": [
+    {
+      "at": 0.37,
+      "event": "initialize"
+    },
+    {
+      "at": 0.48,
+      "event": "thread/start",
+      "threadId": "01a20388-f2d6-7472-8b2b-909753ae1a85"
+    },
+    {
+      "at": 0.5,
+      "event": "turn/start",
+      "turnId": "01a20388-f33f-7b20-88d5-f59a6df95aac"
+    },
+    {
+      "at": 5.72,
+      "event": "userMessage"
+    },
+    {
+      "at": 10.39,
+      "event": "agentMessage",
+      "chars": 35
+    },
+    {
+      "at": 11.97,
+      "event": "commandExecution"
+    },
+    {
+      "at": 18.58,
+      "event": "commandExecution"
+    },
+    {
+      "at": 24.97,
+      "event": "commandExecution"
+    },
+    {
+      "at": 32.71,
+      "event": "commandExecution"
+    },
+    {
+      "at": 38.21,
+      "event": "commandExecution"
+    },
+    {
+      "at": 57.35,
+      "event": "agentMessage",
+      "chars": 2043
+    },
+    {
+      "at": 57.53,
+      "event": "completed",
+      "note": "status=completed"
+    }
+  ]
+}

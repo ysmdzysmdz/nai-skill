@@ -1,0 +1,40 @@
+{
+  "label": "noquota_test",
+  "elapsedSeconds": 7.57,
+  "cwd": "C:\\Users\\76383\\dsh-event\\nai-skill",
+  "sandbox": "danger-full-access",
+  "approvalPolicy": "never",
+  "model": null,
+  "threadId": "01a20395-b12b-7563-b735-9226d805b0d7",
+  "turnId": "01a20395-b18b-74a3-89cc-91acb0a0011a",
+  "status": "failed",
+  "note": "status=failed",
+  "messageCount": 0,
+  "parsed": false,
+  "output": "20261122-220751_noquota_test.json",
+  "timeline": [
+    {
+      "at": 0.27,
+      "event": "initialize"
+    },
+    {
+      "at": 0.41,
+      "event": "thread/start",
+      "threadId": "01a20395-b12b-7563-b735-9226d805b0d7"
+    },
+    {
+      "at": 0.44,
+      "event": "turn/start",
+      "turnId": "01a20395-b18b-74a3-89cc-91acb0a0011a"
+    },
+    {
+      "at": 5.21,
+      "event": "userMessage"
+    },
+    {
+      "at": 7.57,
+      "event": "failed",
+      "note": "status=failed"
+    }
+  ]
+}

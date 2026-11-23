@@ -1,0 +1,25 @@
+{
+  "source": {
+    "library": "pose-zh",
+    "id": "pair60_P013_side",
+    "image": "C:\\Users\\76383\\codex-event\\ai-pose-gallery-zh\\img\\pair60_P013_side.png"
+  },
+  "roles": ["girl", "boy"],
+  "tags": {
+    "subject": "1girl | 1boy",
+    "hair": " | ",
+    "face": " | ",
+    "body": "nude, slim | nude, muscular_male",
+    "clothes": " | ",
+    "pose": "all_fours, hands_on_floor, knees_bent, arched_back, target#doggystyle, target#hand_on_another's_hip | kneeling, leaning_forward, head_down, source#doggystyle, source#hand_on_another's_hip"
+  },
+  "positivePrompt": "ultra complexity, high complexity, best quality, amazing quality, masterpiece, top aesthetic, highres, absurdres, highly detailed\n1girl, 1boy, couple\nBoth face left. The woman is on her hands and knees in front of the man, who kneels directly behind her with his pelvis against her buttocks and his hands resting on her hips.",
+  "angle_hint": "侧面",
+  "skipped": [
+    "所选原图为正侧面，未满足背面或侧后方的视角条件。",
+    "两个人偶均未绘出头发、发饰、五官或衣物，无法标注发型、发色、瞳色、表情和服装单品。",
+    "图中可辨认后入位，但骨盆接触处未绘出生殖器或插入细节，无法进一步标注。"
+  ],
+  "uncertain": [],
+  "note": "女方在左前，双掌平贴地面，手指朝左，肩膀几乎正对手腕上方；双膝落地，小腿向右后方折回。男方同向跪在她身后，低头略微前倾，较清楚的一只手覆在她的髋外侧，四指朝大腿方向垂下。"
+}
