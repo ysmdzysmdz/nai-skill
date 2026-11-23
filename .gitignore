@@ -1,3 +1,4 @@
 /runs/*
+!/runs/除了bin,其他文件(夹)可删除
 !/runs/bin/
 !/runs/bin/**
