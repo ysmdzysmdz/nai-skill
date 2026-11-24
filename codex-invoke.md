@@ -3,9 +3,11 @@
 > **给调度方 agent（lead）看。** 用户说「从素材库挑个姿势/服饰/人像」「参考这个发型」这类话时，读本文件。
 >
 > **一句话原则：素材库的活全部归 codex，我只发一句话、只收一个成品提示词。**
-> codex 干活所需的知识在 [`pose-clothes-hair-reference.md`](pose-clothes-hair-reference.md)——那是它的手册，不是我的。
+> codex 干活所需的知识在 [`ai-pose-gallery-zh.md`](ai-pose-gallery-zh.md)——那是它的手册，不是我的。
 
 当前通过 `codex-as.js` 调用 `codex app-server`，使用默认的 stdio 传输。
+
+素材库根目录为项目根下的 `ai-pose-gallery-zh`。
 
 ---
 
@@ -16,17 +18,20 @@
 新电脑先确认 `node --version` 和 `codex --version` 都能运行。需要安装 CLI 时，可用 `npm install -g @openai/codex`，再按 `codex` 的提示登录。
 
 ```powershell
-# 在项目根验证 CLI、登录与 JSON 输出
+# 在项目根验证 CLI、登录与 JSON 输出（read-only 也能跑，见 §8.4）
 .\runs\bin\run-codex.ps1 -Label smoke -Sandbox read-only -NoIndex -Prompt '只回复 {"ok":true}，不调用工具。'
 
 # 先创建 runs\req\poseA.txt，再执行任务并补索引
 .\runs\bin\run-codex.ps1 -Label poseA -PromptFile .\runs\req\poseA.txt
 
 # 直连底层（不补索引时才用）
-node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label poseA --task .\runs\req\poseA.txt
+$projectRoot = (Get-Location).Path    # 当前目录应含 runs\bin
+$sqlitePath = (New-Item -ItemType Directory -Path (Join-Path $projectRoot 'runs\.codex-state') -Force).FullName
+node .\runs\bin\codex-as.js --cwd $projectRoot --label poseA --task .\runs\req\poseA.txt --sandbox read-only --cfg "sqlite_home='$sqlitePath'"
 ```
 
 产物直落 `runs\`，提示词放 `runs\req\`，索引 `runs\runs.jsonl`，见 §7。
+包装器默认将 SQLite 状态写入 `runs\.codex-state\`。直连命令通过 `--cfg` 显式指定该目录，见 §8.4。
 
 ### 0.2 什么任务交给 codex
 
@@ -44,18 +49,19 @@ node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label poseA --task .\run
 | 环节 | 谁干 |
 |---|---|
 | 读 JSON 清单、按分类/关键词筛选、随机抽一条 | **codex** |
-| 拼绝对路径、校验图片存在、下载远端图、缩图 | **codex** |
+| 拼绝对路径、校验图片存在、缩图 | **codex** |
 | 打开参考图、看图识特征 | **codex** |
 | 输出人物本体六段 tag（subject / hair / face / body / clothes / pose） | **codex** |
 | **决定取景范围**（全身 / 半身 / 特写） | 我 |
 | **设计背景**（环境 / 光源 / 空气三层配方，见 AGENTS.md §3.3） | 我 |
 | **决定从哪个角度看、镜头怎么给** | 我 |
+| **决定是否增删tag,如果增删,给出理由**| 我 |
 | 双人时按 `\|` 拆段、映射 `charCaptions`、定坐标 | 我 |
-| 收 tag → 补取景镜头 → 加参数 → 问 stylePrompt → 出图 | 我 |
+| 收 tag → 补取景镜头 → 加参数 → 采用用户指定的风格（缺省时询问）→ 展示并等确认 | 我 |
 
 **我不碰素材库。** 不自己读 `data\*.json`、不自己 `Get-Random`、不自己 `Test-Path`、不自己看参考图。
 
-**素材库的图是白底棚拍、完成度很低的参考**，镜头方向读不出来，只能我自己按画面意图定；codex 那边也已禁止输出取景与镜头。
+**素材库的图是白底棚拍、完成度很低的参考**，成图镜头由调用方决定，只能我自己按画面意图定；codex 那边也已禁止输出取景与镜头。
 
 ---
 
@@ -70,39 +76,36 @@ node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label poseA --task .\run
 
 **（b）必须从提示词里删掉**，只把（a）传过去。角色名、体型要求（巨乳 / 肥阴阜等）、想加的身体 tag 一律不进 codex 的输入。
 
-**为什么**：codex 只被授权做「把素材图如实翻译成 tag」。需求里一旦出现「给指定角色写提示词」，只有两种结局——按标注器规则判越权而拒绝（白跑一次），或硬填导致 `skipped` 的如实性作废（`hair`/`face`/`body`/`clothes` 四段变成听指令写的，不再是看图写的）。按手册 §8，角色本来就不该由它产生。
+**为什么**：codex 只被授权做「把素材图如实翻译成 tag」。需求里一旦出现「给指定角色写提示词」，只有两种结局——按标注器规则判越权而拒绝（白跑一次），或硬填导致 `skipped` 的如实性作废（`hair`/`face`/`body`/`clothes` 四段变成听指令写的，不再是看图写的）。按素材手册 §7，角色本来就不该由它产生。
 
 | 用户原话 | ❌ 直接传 | ✅ 剥离后传 |
 |---|---|---|
 | 「从素材库找个双人最刺激的姿势，套到芭芭拉和琴身上，两人巨乳、可见蜜缝」 | 越权，会被拒 | 「从素材库挑一张双人（**不限性别组合**）贴身交缠、性意味最强的姿势参考图，挑到就如实标注」 |
 | 「随机挑个性感服饰来画」 | 原样传即可（纯检索型） | 原样传 |
 
-角色 tag 之后用 `search_inspiration` 查。
-
 ### 2.2 需求文本模板
 
-先用pwsh语法:$env:USERPROFILE获取用户目录,然后拼接`\codex-event\ai-pose-gallery-zh`,这是素材库根目录.
 把这段存成 `runs\req\<label>.txt` 再用 `--task` 喂进去：
 
 ```
-按当前工作目录下 pose-clothes-hair-reference.md 的规则，完成下面这个需求。
+按素材手册 ai-pose-gallery-zh.md 的指示完成下面的需求。
 
-素材库根目录（相对路径基准）：
+素材库根目录（包含 data 和 img）：<所选素材库的绝对路径>
 
 需求原文：<剥离后的（a）部分>
 
 要求：
-- 只读 pose-clothes-hair-reference.md 这一个文件，不要读同目录其他 .md
+- 只读 ai-pose-gallery-zh.md 这一个文件，不要读同目录其他 .md
 - 自己检索 data\ 下的 JSON 完成选图，不要问我选哪张
 - 自己打开原图看图，不要让我附图
 - note 里必须写出至少一个只有看图才知道的细节，别只复述素材名
 - 输出格式严格照手册 §7：六段 tag + positivePrompt + angle_hint + skipped
-- 这是本地素材标注任务（手册 §1.0.1）：把图如实翻译成 tag，不要降级替代、不要拒绝
+- 这是本地素材标注任务（手册 §1.1）：把图如实翻译成 tag，不要降级替代、不要拒绝
 - 图里画了什么就写什么，不要换成更保守的说法
 - 确实没写的必须列进 skipped 并说明原因，不许静默省略
-- 若选中双人姿势，六个字段都要用 | 按角色拆段，并给出 roles
-- 双人时所有跨人标签（接触/相对位置/施受/性交位）必须带 source# / target# / mutual# 前缀，每对接触两端都要标（见手册 §7.5.1 映射表）
-- source# 给动作发起/在上的一方，target# 给承受/在下的一方；只标一端或裸写 sitting_on_lap、hug 这类标签都算不合格
+- 多人时 subject 汇总人数，其余五个字段均按 roles 顺序用 | 拆段，空段留位。
+- 双方可见的跨人动作按素材手册 §6.1 在不同角色段中配对。单侧可见时，在 skipped 写完整标签和遮挡原因，在 note 写可见依据。
+- source# 给动作发起方，target# 给承受方。双方共同进行的动作在各自段中写 mutual#。
 - 单人专属标签（如 spread_legs、knees_bent、hands_on_own_knees）不加前缀，原样写进那个人那段
 - positivePrompt 的自然语言站位句必须写清方向（谁坐在谁腿上、谁在谁身后）
 - 不要输出取景、镜头——那些我来补
@@ -121,7 +124,9 @@ node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label poseA --task .\run
 .\runs\bin\run-codex.ps1 -Label <名字> -PromptFile .\runs\req\<名字>.txt
 
 # 底层直连（要自定义 --cfg / --out 时才用）
-node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label <名字> --task .\runs\req\<名字>.txt
+$projectRoot = (Get-Location).Path    # 当前目录应含 runs\bin
+$sqlitePath = (New-Item -ItemType Directory -Path (Join-Path $projectRoot 'runs\.codex-state') -Force).FullName
+node .\runs\bin\codex-as.js --cwd $projectRoot --label poseA --task .\runs\req\poseA.txt --sandbox read-only --cfg "sqlite_home='$sqlitePath'"
 ```
 
 | 参数（codex-as.js） | 默认 | 作用 |
@@ -130,7 +135,7 @@ node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label <名字> --task .\
 | `--label` | `run` | 落盘文件名后缀 |
 | `--task` | 必填 | 提示词文件路径（相对路径按当前 shell 的 cwd 解析） |
 | `--out` | `runs\` | 产物目录；默认脚本上一级，即 `runs\` |
-| `--sandbox` | `danger-full-access` | 需读手册 + 素材库（两个不同目录） |
+| `--sandbox` | `danger-full-access` | 脚本当前默认值。读取本地清单和图片可显式选 `read-only`。需要下载或缩图时，单独考虑网络和目标目录写权限。 |
 | `--approval` | `never` | 无人值守 |
 | `--model` | Codex 原生设置 | 覆盖模型 |
 | `--codex` | 从 PATH 查找 | 指定 CLI 可执行文件或 npm 的 `bin\codex.js` |
@@ -144,6 +149,7 @@ node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label <名字> --task .\
 | `-Sandbox` | `danger-full-access` | 透传 |
 | `-Model` | — | 透传 |
 | `-CodexPath` | 从 PATH 查找 | 透传给 `--codex` |
+| `-SqliteHome` | `runs\.codex-state` | codex 的 sqlite 落盘目录，见 §8.4 |
 | `-NoIndex` | 关 | 跳过归档 |
 | `-WithProjectDoc` | 关 | 透传 |
 
@@ -166,7 +172,7 @@ node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label <名字> --task .\
 ```
 【输出格式 — 必须严格遵守】
 在最后一条消息里，只输出一个 JSON 对象，不要任何其他文字：
-{"results":[{"task":1,"kind":"clothes", ...手册 §8 全部字段...},{"task":2,"kind":"pose", ...},{"task":3,"kind":"portrait", ...}]}
+{"results":[{"task":1,"kind":"clothes", ...手册 §7 全部字段...},{"task":2,"kind":"pose", ...},{"task":3,"kind":"portrait", ...}]}
 ```
 
 **「最后一条消息」必须写死** —— 否则它可能拆成多条消息分别答，`results` 就残缺。
@@ -185,68 +191,81 @@ node .\runs\bin\codex-as.js --cwd (Get-Location).Path --label <名字> --task .\
 ### 4.1 八步流程
 
 ```
-runs\<stamp>_<label>.json（六段 + angle_hint + skipped）
+runs\<stamp>-<runId>_<label>.json（六段 + angle_hint + skipped）
    ↓ ① 【我组装】positivePrompt 首行补 AGENTS.md §3.1 的美学词
    ↓ ② 校验六段顺序：subject → hair+face → body → clothes → pose
    ↓ ②b 校验 skipped：对照 §6 的空段事实表，该空的空=合格，不该空的空=漏标
    ↓ ②c 校验 pose 不是 posing / elegant_pose 这类空话——是就退回重做
-   ↓ ②d 【双人必做】前缀校验，跑下面脚本，出裸标签或单向标就整份退回
+   ↓ ②d 【多人】按 §4.2 检查段数和前缀。结构错误退回，注明单侧可见的记录按图复核。
    ↓ ③ 【我判断】取景：全身 / 半身 / 特写，写进 subject 段
    ↓ ④ 【我判断】镜头：读 angle_hint + 姿势名称，决定角度
    ↓ ④b 【机械拆分】roles ≥ 2 时按 | 拆段 → charCaptions，坐标我定
    ↓ ⑤ 按 AGENTS.md §1.1 定尺寸、§1.2 定参数
-   ↓ ⑥ 按 AGENTS.md §2 问用户 stylePrompt 取向（不许替用户拍板）
+   ↓ ⑥ 沿用用户已经指定的 stylePrompt、roll 或留空选择，尚未指定时按 AGENTS.md §2 询问。
    ↓ ⑦ 展示完整提示词 + 参数表，等用户确认
    ↓ ⑧ enqueue_generation，count=1，**显式传 charCaptions**（单角色传 `[]` 清桌面残留）
 ```
 
 ### 4.2 ②d 裸标签校验（双人必跑）
 
-codex 的前缀是它自己标的，**不能默认它对**。`$fail` 非空就整份退回重做，别手工补救——手工补一次它下次还错，退回才能让它自己收敛。
+将下面 PowerShell 代码保存为临时脚本，使用 `-Path <答案 JSON 路径>` 调用。单项结果和批量 `results` 均可。`REVIEW` 项按图核对遮挡依据，结构或配对错误会抛出异常。裸标签检查覆盖表中列出的常见动作，新动作仍需按 §6.1 的语义复核（见素材手册）。
 
 ```powershell
-$j    = Get-Content .\runs\<stamp>_<label>.json -Raw | ConvertFrom-Json
-$n    = $j.roles.Count
-$fail = @()
-
-# 1) 段数校验：body / clothes / pose 每段都必须等于人数
-foreach ($f in 'hair','face','body','clothes','pose') {
-  $c = (($j.tags.$f -split '\|')).Count
-  if ($c -ne $n) { $fail += "段数不符: $f = $c 段, 应为 $n" }
-}
-
-# 2) 裸跨人标签：出现在任何段里都算错
-$naked = 'sitting_on_lap','straddling','girl_on_top','cowgirl_position','upright_straddle',
-         'hug','hugging','kissing','kiss_on_cheek','holding_hands','headpat','head_rest',
-         'lap_pillow','carrying','princess_carry','on_top_of','pinning','leaning_on',
-         'missionary','doggystyle','fellatio','paizuri','handjob','fingering','cunnilingus',
-         'hug_from_behind','breast_grab'
-$segs = $j.tags.pose -split '\|'
-for ($i = 0; $i -lt $segs.Count; $i++) {
-  $toks = ($segs[$i] -split ',') | ForEach-Object { $_.Trim() }
-  foreach ($k in $naked) { if ($toks -contains $k) { $fail += "裸标签 $k 出现在第 $($i+1) 段" } }
-}
-
-# 3) 配对校验：source#X 必须在另一段有 target#X 或 mutual#X
-$map = @{}
-for ($i = 0; $i -lt $segs.Count; $i++) {
-  foreach ($m in [regex]::Matches($segs[$i], '(source|target|mutual)#([\w''\-]+)')) {
-    $map[$m.Groups[1].Value + '#' + $m.Groups[2].Value] += ,$i
-  }
-}
-foreach ($k in $map.Keys) {
-  if ($k -like 'source#*') {
-    $name = $k.Substring(7)
-    if (-not $map.ContainsKey("target#$name") -and -not $map.ContainsKey("mutual#$name")) {
-      $fail += "缺配对: $k 没有对应的 target#$name"
+param([Parameter(Mandatory)][string]$Path)
+$document = Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json
+$items = if ($document.PSObject.Properties['results']) { $document.results } else { $document }
+$errors = @()
+$review = @()
+$interaction = '^(sitting_on_lap|straddling|girl_on_top|cowgirl_position|upright_straddle|hug|hugging|kissing|kiss_on_cheek|holding_hands|eye_contact|headpat|head_rest|lap_pillow|carrying|princess_carry|on_top_of|pinning|leaning_on|missionary|doggystyle|fellatio|paizuri|handjob|fingering|cunnilingus|hug_from_behind|breast_grab|(?:hand|head)_on_another''s_.+)$'
+foreach ($item in $items) {
+    $id = $item.source.id
+    $people = @($item.roles | Where-Object { $_ }).Count
+    if ($people -lt 2) {
+        if ($item.tags.subject -match '\||\bcouple\b|\b(?:[2-9]|[1-9]\d+)(?:girls?|boys?|others?)\b|\b1(?:girl|boy|other)\b.*\b1(?:girl|boy|other)\b' -or $item.tags.pose -match '\|') {
+            $errors += "$id 多人结果缺少 roles"
+        }
+        continue
     }
-  }
-  if ($k -like 'mutual#*' -and $map[$k].Count -lt 2) { $fail += "$k 只出现在一段，应两段都有" }
+
+    $actions = @()
+    foreach ($field in 'hair','face','body','clothes','pose') {
+        if (!$item.tags.PSObject.Properties[$field]) {
+            $errors += "$id 缺少 $field"
+            continue
+        }
+        $parts = [regex]::Split([string]$item.tags.$field, '\|')
+        if ($parts.Count -ne $people) { $errors += "$id $field 段数与 roles 不符" }
+        for ($i = 0; $i -lt $parts.Count; $i++) {
+            foreach ($word in $parts[$i].Split(',')) {
+                $tag = $word.Trim()
+                if ($tag -match '^(source|target|mutual)#(.+)$') {
+                    $actions += [pscustomobject]@{ Role=$i; Side=$Matches[1]; Name=$Matches[2]; Tag=$tag }
+                } elseif ($tag -match $interaction) {
+                    $errors += "$id 第 $($i+1) 人含裸互动标签 $tag"
+                }
+            }
+        }
+    }
+    foreach ($action in $actions) {
+        $otherSide = @{ source='target'; target='source'; mutual='mutual' }[$action.Side]
+        $partners = @($actions | Where-Object {
+            $_.Role -ne $action.Role -and $_.Name -eq $action.Name -and $_.Side -eq $otherSide
+        })
+        if ($partners.Count) { continue }
+        $explanation = @($item.skipped | Where-Object { $_ -and $_.Contains($action.Tag) })
+        if ($explanation.Count -and ([string]$item.note).Trim()) {
+            $review += "$id $($action.Tag) 单侧标注，请对照 skipped 和 note 复核"
+        } else {
+            $errors += "$id 第 $($action.Role+1) 人的 $($action.Tag) 在其他角色段缺少配对"
+        }
+    }
 }
-if ($fail) { "REJECT:"; $fail } else { "OK: 前缀与段数通过" }
+if ($review) { $review | ForEach-Object { "REVIEW: $_" } }
+if ($errors) { throw ($errors -join [Environment]::NewLine) }
+if (!$review) { 'OK: 多人段数和已识别的互动标签通过校验' }
 ```
 
-批量结果要**逐份**跑，不能只校验第一份。
+批量输入会逐项校验，单人结果按单人结构处理。
 
 ### 4.3 ③ 取景
 
@@ -275,7 +294,7 @@ codex 只给人数（`1girl, solo`），取景由我按画面重点加：
 
 ### 4.5 ④b 拆 charCaptions
 
-`roles` 长度 ≥ 2 时，先读 [`multi-character.md`](multi-character.md)，然后纯机械拆分：
+`roles` 长度 ≥ 2 时，先读项目根的 `multi-character.md`，然后纯机械拆分：
 
 ```
 roles: ["girl", "boy"]
@@ -292,7 +311,7 @@ charCaptions[1].prompt = "boy, short_hair, black_hair, ..., standing, ..., sourc
 1. **每个角色 prompt 以 `roles[i]` 开头，不带数字**——`girl` / `boy`，不是 `1girl`
 2. **人数标签只在 base 里**，角色 prompt 里不重复
 3. **坐标我定**：按段序从左到右均分 `x`（如 0.32 / 0.68），`y` 用 0.5；两人前后叠压时调 `y` 拉开
-4. **`source#` / `target#` / `mutual#` 前缀原样透传**：不增、不删、不改名。codex 交什么就进 `charCaptions` 什么。前缀缺失或缺配对只有一条处理路径——走 §4.2 退回重做。
+4. **保留已确认的互动前缀**。双方可见时分配到不同角色，单侧可见时按 §4.2 复核 `skipped` 和 `note`。
 
 ### 4.6 ④c 段数校验
 
@@ -306,11 +325,7 @@ charCaptions[1].prompt = "boy, short_hair, black_hair, ..., standing, ..., sourc
 
 ## 5. 角色套用
 
-### 5.1 查角色 tag
-
-用 `novelai-desktop` MCP 的 `search_inspiration`（`source: "character"`），拿 `looks` + `outfit` 两栏。别凭记忆写角色特征。
-
-### 5.2 性别改写（`roles` ≠ 实际角色性别时）
+### 5.1 性别改写（`roles` ≠ 实际角色性别时）
 
 检索时刻意**不限定性别组合**：库里明确的插入 / 内射 / 骑乘位多是 1 男 1 女，写死 `2girls` 会把它们全筛掉。
 
@@ -471,3 +486,35 @@ foreach ($f in '.\runs\bin\run-codex.ps1','.\runs\bin\archive-codex.ps1') {
 **`codex-as.js` 默认加 `-c project_doc_max_bytes=0` 关掉**（实测再问一遍返回 `none`）。理由是那份 AGENTS.md 是给出图 agent 的规范，「先问 stylePrompt 再生成」「每次生成 1 张」这些规则跟手册的「不反问、自己定条件」直接打架，还会白烧 3–4k tokens。
 
 要保留该行为（例如让 codex 遵守项目规范做别的事）传 `--with-project-doc`。
+
+### 8.4 状态库落盘与沙箱（2026-11-23 定案）
+
+**症状**（`runs\` 里 13:00 那两份 `swimSquat` 失败记录就是它）：
+
+```
+Error: failed to initialize sqlite state runtime under C:\Users\76383\.codex:
+failed to open state DB at ...\state_5.sqlite: error returned from database:
+(code: 14) unable to open database file
+```
+
+`elapsedSeconds: 0.64`、`status: failed`、`messageCount: 0`、`model` / `threadId` 为 `null` —— 一个 JSON-RPC 帧都没发出去，`runs\runs.jsonl` 里也留不下可用产物。
+
+**原因**：codex 0.171.0 启动即初始化 sqlite 状态运行时，在 `CODEX_HOME` 下建 `state_5` / `logs_2` / `queue_1` / `goals_1` / `memories_1` 五个库（WAL 模式，各自还带 `-shm` / `-wal`）。默认位置 `~\.codex`。**只要宿主沙箱不放行这个目录的写，进程 0.6 秒内就 exit 1。** 这跟 `--sandbox` 参数无关——那个只约束模型执行的命令，管不住它自己启动期的落盘。
+
+**修法**：`-c sqlite_home=<path>` 把 sqlite home 单独搬走，`CODEX_HOME`（`auth.json` / `sessions` / `config.toml`）原地不动，登录态不受影响。`run-codex.ps1` 已默认钉到 `runs\.codex-state`，要改传 `-SqliteHome`。
+
+**验证**（2026-11-23 13:19–13:20，全程未申请任何额外权限）：
+
+| 动作 | 结果 |
+|---|---|
+| `codex -c "sqlite_home='…'" doctor` | `sqlite home` 变新路径，`CODEX_HOME` 仍是 `C:\Users\76383\.codex` |
+| 删光 `runs\.codex-state` 后跑 wrapper（默认 `-Sandbox danger-full-access`） | `exit=0`，10.1s，目录自动重建 |
+| 同上、改 `-Sandbox read-only` | `exit=0`，15.5s |
+
+**排查结论**：第一份记录明确报告 SQLite 打开失败，第二份只报告拒绝访问，具体原因尚无法确认。包装器重定向 SQLite 后，§0.1 的 `read-only` smoke 示例已有成功记录。
+
+**附带三条**：
+
+- `runs\.codex-state` 是运行时缓存，可随时删，下次自动重建；**不要**动 `runs\bin\` 与 `runs\req\`。
+- 排查这类问题先跑 `codex doctor`：它直接打印 `sqlite home`、各 DB 路径与 integrity。
+- 失败记录里的 `WARNING: failed to clean up stale arg0 temp dirs: 拒绝访问` 只是警告，不影响启动，别被它带偏。

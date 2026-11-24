@@ -10,7 +10,6 @@
 补充文件:
 > - (一定要看)锁定角色的外观和服饰tag -> [`query-character-tag.md`](query-character-tag.md)
 > - (根据用户指令,当用户说'从我喜欢的角色中选一个'之类的话再看)用户喜欢的角色表 -> [`liked-characters.md`](liked-characters.md)
-> - (根据用户指令,当用户说'从我本地素材库中随机选一个性感服饰/让codex挑个服装'之类的话再看')用户的本地的素材库的使用方法(调用codex) -> [`codex-invoke.md`](codex-invoke.md)
 ---
 
 ## 0. 总则
@@ -161,7 +160,7 @@ from_above, cowboy_shot, centered, dynamic_angle
 - 组与组之间是**换行**,不是逗号连成一大串.
 - 这些分组是参考,不等于全部,还有光照、线条粗细等等.
 - 自然语言补充段(如果需要)放在最后一组之后.
-- 标签用 Danbooru 下划线形式;角色/作品名格式 `name_(series)`.
+- 标签用 Danbooru 下划线形式;角色/作品名格式 `name_(series)`,futanari(有男性生殖器的女性)、furry(有人类特征的动物)不计入人数标签.
 - **多角色时**:本条结构只描述 base prompt;每个角色的七段内容拆进 `charCaptions[i].prompt`,见 §1.3.
 
 **其他常用特殊标签**(官方 [Tagging](https://docs.novelai.net/en/image/tags) 的 Other Tags,当普通 tag 写进对应分组):
@@ -176,9 +175,7 @@ from_above, cowboy_shot, centered, dynamic_angle
 - 它们没有特殊语法,加权重照常(`0.5::location::`).
 - 默认 medium 是 V5,标 V5 only 的都能用;切到 V4 系则只有 `location` 可用.
 
-### 3.3 背景:归 agent 设计
-
-**分工**:codex 只交服装和姿势;素材图里的白底/灰底是**陈列环境,不是画面背景**. 背景一律由我设计,不丢给用户从零拍板,也不问「白底还是卧室」这种二选一.
+### 3.3 背景
 
 **背景不是一个 tag,是三层配方**:
 
@@ -211,6 +208,24 @@ from_above, cowboy_shot, centered, dynamic_angle
 - 用户习惯把需要排除的具体元素写成正面负权重(`-2::xxx::`),medium 下这是唯一手段.
 - 不要加能显著改变画面风格的词,例如`photo`,`3d`,`realistic`等等,除非用户明确要求
 
+### 4.1 负权重会沿语义层级扩散
+
+例如:`-2::white_thighhighs::` **不只压白丝,还把 `thighhighs` 整个品类一起压掉**,同图里的 `purple_thighhighs` 因此一起失效. 用户同种子对照验证: 仅删掉该负权重,`purple_thighhighs` 立刻出来.
+
+**规则**
+
+| 情况 | 判定 | 做法 |
+| --- | --- | --- |
+| 负权重词与正面目标**共享父 tag** | 危险 | 不写该负权重;目标物用**正向加权** `2::purple_thighhighs::` 顶上去 |
+| 确实要清空**整个品类** | 允许 | 写父品类负权重(`-2::thighhighs::`),并接受同类目标一并消失 |
+| 负权重词与正面目标**不共享父 tag** | 安全 | 可正常写(如目标无手套时 `-2::white_gloves::`、无袖子时 `-2::wide_sleeves::`) |
+
+**推论**
+
+- 压角色默认服装时,**禁止用「颜色+品类」的复合子标签**(`white_thighhighs` / `black_dress` / `red_skirt`)去压同一品类里的目标物 —— 颜色那部分是白写的,品类那部分会误伤.
+- 压默认服装的优先级:① 直接压默认服装本体 tag(`-1.5::japanese_clothes::`) ② 正向加权目标服饰 ③ 若只多了个颜色,改正面目标的颜色权重而不是压别的颜色.
+- 出图后若目标服饰缺失而负面里有个同品类 tag,**先删负面再试,不要靠加权重重抽**.
+
 ---
 
 ## 5. 生成流程(固定顺序)
@@ -223,9 +238,8 @@ from_above, cowboy_shot, centered, dynamic_angle
 4. **等用户确认**. 未确认不调用 `enqueue_generation`.
 5. 确认后生成 **1 张**,`count: 1`,**并显式带上 `"charCaptions": []`**(见 0b;多角色时这里才换成拆好的角色数组).
 6. 出图后给出文件绝对路径 + 内嵌预览,附一句可复用的调整建议.
-7. **超时上限 20 秒**:一般而言,生成一张图最长需要 20s.若轮询超过 20s 仍未完成,**停止等待并提醒用户是否重试**,不要无限轮询或静默挂起.
 
-禁止行为:跳过第 3、4 步直接生成;一次堆 4 张让用户挑;轮询超过 20s 仍继续等待.
+禁止行为:跳过第 3、4 步直接生成;一次堆 4 张让用户挑.
 
 ---
 
@@ -252,7 +266,6 @@ from_above, cowboy_shot, centered, dynamic_angle
 
 出图后:
 
-- [ ] 从提交到出图在 20s 内完成;超时则停止轮询并询问用户是否重试
 - [ ] 用 `list_outputs` 拿绝对路径
 - [ ] 内嵌预览图并在正文说明选择理由
 - [ ] 告知实际消耗

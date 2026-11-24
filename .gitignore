@@ -1,4 +1,5 @@
 /runs/*
-!/runs/除了bin,其他文件(夹)可删除
+!/runs/除了bin req,其他文件(夹)可删除
+!/runs/req/
 !/runs/bin/
 !/runs/bin/**

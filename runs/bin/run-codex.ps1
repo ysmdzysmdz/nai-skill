@@ -16,6 +16,9 @@
 #
 # 注意：文件必须是 UTF-8 with BOM。Windows PowerShell 5.1 读无 BOM 的 UTF-8 会按 GBK 解码，
 # 中文变乱码并抛 TerminatorExpectedAtEndOfString，脚本连第一行逻辑都进不去。
+#
+# 沙箱：本脚本默认把 codex 的 sqlite_home 钉到 runs\.codex-state（-SqliteHome 可改），
+# 所以普通 workspace-write 沙箱就能跑通，不需要额外申请全局写权限。
 
 [CmdletBinding(DefaultParameterSetName = 'Inline')]
 param(
@@ -25,6 +28,7 @@ param(
     [ValidateSet('danger-full-access','workspace-write','read-only')][string]$Sandbox = 'danger-full-access',
     [string]$Model,
     [string]$CodexPath,
+    [string]$SqliteHome,
     [switch]$NoIndex,
     [switch]$WithProjectDoc
 )
@@ -44,6 +48,18 @@ $node = (Get-Command node -ErrorAction SilentlyContinue).Source
 if (-not $node) { $node = 'C:\Program Files\nodejs\node.exe' }
 if (-not (Test-Path $node)) { throw '找不到 node' }
 
+# 状态库重定向（2026-11-23）：codex 一启动就要建 sqlite（state/logs/queue/goals/memories），
+# 默认写在 ~\.codex 下。任何只允许写工作目录的沙箱都会让它 0.6s 内 exit 1，报
+#   failed to initialize sqlite state runtime / unable to open database file (code: 14)
+# 把 sqlite_home 指到 runs\.codex-state 即可；CODEX_HOME（auth.json / sessions / config.toml）不动。
+# 验证：不申请任何额外权限，直接跑通（2026-11-23 13:19）。
+if (-not $SqliteHome) { $SqliteHome = Join-Path $runs '.codex-state' }
+$sqliteHomePath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($SqliteHome)
+if (-not (Test-Path -LiteralPath $sqliteHomePath)) {
+    New-Item -ItemType Directory -Path $sqliteHomePath -Force | Out-Null
+}
+$cfgSqlite = "sqlite_home='$sqliteHomePath'"
+
 # 提示词：文件优先，否则落临时文件
 $tmpTask = $null
 if ($PSCmdlet.ParameterSetName -eq 'File') {
@@ -60,6 +76,7 @@ $exitCode = 1
 try {
     $runId = [guid]::NewGuid().ToString('N')
     $argv = @($runner, '--cwd', $root, '--label', $Label, '--task', $taskPath, '--sandbox', $Sandbox, '--run-id', $runId)
+    $argv += @('--cfg', $cfgSqlite)
     if ($Model) { $argv += @('--model', $Model) }
     if ($WithProjectDoc) { $argv += '--with-project-doc' }
     if ($CodexPath) {

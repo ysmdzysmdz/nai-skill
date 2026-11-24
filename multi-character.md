@@ -93,8 +93,6 @@ base:      2girls, side_by_side, indoors, stage, stage_lights, cowboy_shot
 - 官方明确说这个语法**不一定可靠**,要配合自然语言补一句(如 `She is hugging the other girl.`).
 - 引用的官方示例里还用了 `target#pointing` / `source#pointing at another` 这类写法,交互动作都可以套.
 
-**前缀由 codex 在素材转换阶段给出,不是我事后补.** 完整判定口径、方向约定和映射表(坐腿 / 跨坐 / 膝枕 / 拥抱 / 性交位 …)见 [`pose-clothes-hair-reference.md`](pose-clothes-hair-reference.md) §7.5.1;我这边只做透传 + 校验(见 [`codex-invoke.md`](codex-invoke.md) §4 ②d).
-
 ---
 
 ## 6. MCP 字段映射
@@ -155,4 +153,3 @@ base:      2girls, side_by_side, indoors, stage, stage_lights, cowboy_shot
 - [ ] 已在 base 里用自然语言强化站位
 - [ ] medium 下没指望 `negativePrompt` 生效(防串味走具体描述或正面负权重)
 - [ ] 已清掉桌面残留的空角色槽
-- [ ] 角色数 ≤ 4(最多不超过 22)
