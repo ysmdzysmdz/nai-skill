@@ -1,1 +1,0 @@
-优先使用novelai-desktop mcp的search_inspiration工具精准锁定角色的外貌和服饰特征.
